@@ -7,17 +7,41 @@ body {
     background-size: cover;
 
     color: #ffffff;
+    min-height: 100vh;
 
     font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;
 }
 
-#title {
-    font-size: 3em;
+a {
+    color: white;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+#flexContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    min-height: 100vh;
+}
+
+header {
     width: 50%;
     padding-left: 20px;
     margin-bottom: 50px;
+}
 
+header h1 {
+    font-size: 3em;
     font-family: 'Bebas Neue', sans-serif;
+}
+
+h3 {
+    text-decoration: underline;
 }
 
 #mc_embed_signup {
@@ -29,24 +53,36 @@ body {
 
 #mc-embedded-subscribe-form {
     width: 50%;
+    max-width: 450px;
 }
 
 #mce-EMAIL {
     margin-bottom: 5px;
 }
 
-#statement {
-    width: 75%;
+#policy {
+    width: 100%;
     margin: auto;
+    font-weight: bold;
+    display: inline-block;
+    backdrop-filter: brightness(0.8) blur(3px);
+}
+
+#statement {
+    width: 100%;
+    margin: auto;
+    font-weight: bold;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    backdrop-filter: brightness(0.8) blur(3px);
 }
 
 #statement ul {
     padding: 0;
+    width: 75%;
 }
 
 #statement li {
@@ -58,4 +94,16 @@ body {
     border: 0;
     height: 1px;
     background-image: linear-gradient(to right, rgb(255, 255, 255, 0), rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+}
+
+footer {
+    font-size: 0.75em;
+    text-align: center;
+    min-height: 10svh;
+    margin-top: auto;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+    justify-content: center;
 }
