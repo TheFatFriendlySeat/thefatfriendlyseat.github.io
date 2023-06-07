@@ -1,5 +1,4 @@
 // libraries
-import { SessionProvider } from "next-auth/react";
 import { AppProps } from "next/app";
 import { IconContext } from "react-icons";
 
@@ -12,9 +11,9 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppProps) => {
 
     return (
         <IconContext.Provider value={{ className: "icon", size: "25px" }}>
-            <SessionProvider session={session}>
+            {/* <SessionProvider session={session}> */}
                 <AnyComponent {...pageProps} />
-            </SessionProvider>
+            {/* </SessionProvider> */}
         </IconContext.Provider>
     );
 };
