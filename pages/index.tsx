@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Header from "../components/header";
 
 import styles from "../styles/index.module.scss"
+import { Venues } from "@prisma/client";
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
+
+    const [venues, setVenues] = useState([] as Venues[]);
+
+    useEffect(() => {
+        fetch("/api/venues").then((res) => res.json()).then((data) => {
+            console.log(data);
+            setVenues(data);
+        });
+    }, []);
+
     return <div>
         <Header />
         <article id={styles.content}>
@@ -52,6 +63,14 @@ const HomePage: React.FC = () => {
                 <br/>
                 Subscribe to the newsletter above or follow us on <a href="https://www.instagram.com/thefatfriendlyseat/" target="_blank" rel="noopener noreferrer">Instagram</a> to keep up to date with our progress.
             </p>
+            
+            <h3>THIS IS PRISMA!!!</h3>
+            <ul>
+                { venues.map((venue) => {
+                    console.log(venue);
+                    return (<li key={venue.id}>{venue.name} | {venue.address}</li>);
+                }) }
+            </ul>
         </article>
     </div>
 };
