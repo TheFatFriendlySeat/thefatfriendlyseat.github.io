@@ -1,0 +1,11 @@
+$base-color: #1d689a;
+$base-color-light: scale-color($base-color, $lightness: 33%);
+$base-color-dark: scale-color($base-color, $lightness: -33%);
+
+$cta-color: #ec8333;
+$cta-color-light: scale-color($cta-color, $lightness: 33%);
+$cta-color-dark: scale-color($cta-color, $lightness: -33%);
+
+$font-color: #ffffff;
+$title-font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans-serif;
+$body-font-family: Century Gothic, CenturyGothic, AppleGothic, sans-serif;

@@ -1,0 +1,66 @@
+.hamburger {
+    position: fixed;
+    z-index: 100;
+    top: 1em;
+    right: 1em;
+    padding: 4px;
+    border: $base-color-light solid 1px;
+    background: $base-color;
+    color: $font-color;
+    cursor: pointer;
+
+    svg {
+      height: 100%;
+      width: 100%;
+    }
+}
+
+.menu {
+    margin: auto 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    color: $font-color;
+    list-style: none;
+    padding-top: 4em;
+    backdrop-filter: brightness(0.4) blur(3px);
+
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+
+    .menuItem {
+        font-size: 1.5em;
+        color: white;
+        text-decoration: none;
+        margin: 1em 0;
+
+        transition: margin-left 0.3s ease-out;
+      }
+      
+      .menuItem:hover {
+        text-decoration: underline;
+        margin-left: 0.5em;
+      }
+
+      .menuItem:last-child {
+        font-size: 1em;
+        position: absolute;
+        bottom: 1em;
+      }
+}
+
+.is_open {
+    transform: translateX(calc(33% + 2em)); // Never overlap the logo
+
+    @media screen and (orientation: landscape) {
+      transform: translateX(calc(100% - 390px));
+  }
+}

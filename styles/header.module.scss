@@ -1,0 +1,23 @@
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    background-color: $base-color-light;
+
+    background-image: url(/theatre_background.jpeg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    box-shadow: 0 5px 20px 10px rgb(0, 0, 0, 0.5);
+
+    .instagram {
+        margin: 1em;
+
+        svg {
+            padding-left: 5px
+        }
+    }
+}

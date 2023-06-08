@@ -1,0 +1,32 @@
+# create an image to install dependencies on
+# this will result in smaller images when we build
+FROM --platform=linux/x86_64 node:16-alpine as DEPS
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY ./prisma /usr/src/app/prisma
+
+RUN npm install
+
+# generate the types for prisma
+RUN npm run prisma:generate
+# migrate the database
+RUN npm run prisma:migrate:dev
+# seed the database
+# RUN npm run prisma:seed
+
+
+
+# now we make a container to build our app - copying over the node_modules from 
+# the deps container we made above
+FROM --platform=linux/x86_64 node:16-alpine as BUILDER
+
+WORKDIR /usr/src/app
+
+COPY . /usr/src/app
+COPY --from=DEPS /usr/src/app/node_modules /usr/src/app/node_modules
+
+EXPOSE 3001
+
+CMD [ "npm", "run", "dev" ]
