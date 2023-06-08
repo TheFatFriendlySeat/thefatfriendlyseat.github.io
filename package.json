@@ -6,7 +6,7 @@
   "author": "jennifer.anne12@hotmail.co.uk",
   "scripts": {
       "dev": "NEXT_TELEMETRY_DISABLED=1 next dev",
-      "build": "next build",
+      "build": "next build && touch docs/.nojekyll",
       "start": "NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production next start",
       "test": "jest --maxWorkers=50%",
       "prisma:generate": "prisma generate",
