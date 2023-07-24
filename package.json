@@ -14,6 +14,7 @@
       "prisma:migrate:production": "prisma migrate deploy",
       "prisma:seed": "prisma db seed",
       "prisma:studio": "prisma studio",
+      "prisma:format": "prisma format",
       "dcup": "docker-compose -f docker-compose.yml up --build"
   },
   "dependencies": {
