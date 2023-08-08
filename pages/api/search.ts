@@ -25,11 +25,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             ];
 
             // Splitting the search string into an array of search terms so we can search for each term individually
-            // filtering out any terms that are too short or are in the blacklsit
-            const searchQueries = searchString.split(' ')
+            // filtering out any terms that are too short or are in the blacklist
+            const filteredSearchStrings = searchString.split(' ')
                 .filter((term) => term.length > 0)
-                .filter((term) => !wordsToFilterOut.includes(term))
-                .map((term) => {
+                .filter((term) => !wordsToFilterOut.includes(term));
+                
+
+            const venueSearchQueries = filteredSearchStrings.map((term) => {
                 return {
                     name: {
                         contains: term,
@@ -37,54 +39,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 }
             });
 
-            // Make sure to search the original search string as well (this might include words in the blacklist)
-            searchQueries.unshift({name: { contains: searchString}});
+            const cityTownSearchQueries = filteredSearchStrings.map((term) => {
+                return {
+                    cityTown: {
+                        name: {
+                            contains: term,
+                        }
+                    }
+                }
+            });
 
             try {
                 // Search for venues first
                 let venues: Venue[] = [];
                 venues = await prisma.venue.findMany({
-                    orderBy: {
-                        name: 'asc',
-                    },
                     include: {
                         cityTown: true,
                     },
                     where: {
-                        OR: searchQueries
+                        // Make sure to search the original search string as well (this might include words in the blacklist)
+                        OR: [{name: { contains: searchString}}, ...venueSearchQueries, ...cityTownSearchQueries]
                     }
                 });
-
-                // search for city/towns
-                    const cityTowns = await prisma.cityTown.findMany({
-                        orderBy: {
-                            name: 'asc',
-                        },
-                        include: {
-                            venues: true,
-                        },
-                        where: {
-                            OR: searchQueries
-                        }
-                    });
-
-                    cityTowns.forEach(cityTown => {
-                        for (const venue of cityTown.venues) {
-                            if (venues.find(v => v.id === venue.id)) {
-                                continue;
-                            }
-
-                            (venue as any).cityTown = {
-                                cityTownId: cityTown.id,
-                                name: cityTown.name,
-                                countyName: cityTown.countyName,
-                                createdAt: cityTown.createdAt,
-                                updatedAt: cityTown.updatedAt,
-                            };
-                            venues.push(venue);
-                        };
-                    });
-
                 
                 res.status(200).json(venues);
             } catch (error: any) {
