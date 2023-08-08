@@ -1,0 +1,21 @@
+# next build output
+
+.next/
+
+# deps
+
+node_modules/
+
+# database
+
+prisma/dev.db
+
+# misc files
+
+README.md
+Dockerfile
+docker-compose.yml
+docker-compose-production.yml
+.dockerignore
+.git
+.gitignore

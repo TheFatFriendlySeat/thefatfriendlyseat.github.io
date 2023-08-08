@@ -12,7 +12,7 @@ module.exports = (phase, { defaultConfig }) => {
         },
 
         // output: "export", // Cretes a static site
-        distDir: "docs", // Outputs to /docs folder for github pages
+        // distDir: "docs", // Outputs to /docs folder for github pages
     };
 
     return nextConfig;

@@ -11,6 +11,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                     orderBy: {
                         name: 'asc',
                     },
+                    include: {
+                        venues: true,
+                    }
                 });
                 res.status(200).json(cityTowns);
             } catch (error: any) {

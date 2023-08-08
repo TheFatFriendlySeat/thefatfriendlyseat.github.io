@@ -3,9 +3,8 @@ import React from "react";
 import Header from "../components/header";
 
 import styles from "../styles/about.module.scss"
-import { CityTown, Venue } from "@prisma/client";
-
-type VenueWithCity = Venue & { cityTown: CityTown };
+import { Venue } from "@prisma/client";
+import VenueCard, { VenueWithCity } from "../components/venueCard";
 
 const VenuesPage: React.FC = () => {
     const [venues, setVenues] = React.useState([] as VenueWithCity[]);
@@ -27,14 +26,7 @@ const VenuesPage: React.FC = () => {
         <article id={styles.about}>
             <div className={styles.content}>
                 {venues.map((venue: VenueWithCity) => {
-                    return <React.Fragment>
-                            <h2>{venue.name}</h2>
-                            <p>{venue.cityTown.name}</p>
-                            <p>{venue.countyName}</p>
-                            <p>{venue.website}</p>
-                            <p>{venue.status}</p>
-                            <p>{venue.notes}</p>
-                        </React.Fragment>
+                    return <VenueCard key={venue.id} venue={venue} />
                     })
                 }
             </div>

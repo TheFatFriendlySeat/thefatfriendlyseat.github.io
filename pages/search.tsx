@@ -2,33 +2,50 @@ import React from "react";
 
 import Header from "../components/header";
 
-import styles from "../styles/about.module.scss"
-import { CityTown, Venue } from "@prisma/client";
+import VenueCard, { VenueWithCity } from "../components/venueCard";
 
-type VenueWithCity = Venue & { cityTown: CityTown };
+import styles from "../styles/search.module.scss"
+
 
 const SearchPage: React.FC = () => {
-    // const [venues, setVenues] = React.useState([] as VenueWithCity[]);
+    const [searchTerm, setSearchTerm] = React.useState("");
+    const [venueData, setVenueData] = React.useState([] as VenueWithCity[]);
+    const [searching, setSearching] = React.useState(false);
+    const [hasSearched, setHasSearched] = React.useState(false);
 
-    // React.useEffect(() => {
+    const onChange = (e: React.ChangeEvent) => {
+        setSearchTerm((e.target as HTMLInputElement).value);
+    };
 
-    //     const getVenueData = async () => {
-    //         const venueData: Venue[] = await fetch('/api/venues').then(res => res.json());
+    const onClick = () => {
+        setSearching(true);
+        const searchVenue = async () => {
+            const venueData: VenueWithCity[] = await fetch(`api/search?q=${searchTerm.toLowerCase()}`).then(res => res.json());
+            setVenueData(venueData);
+            setHasSearched(true);
+            setSearching(false);
+        }
+        searchVenue().catch(err => console.log(err));
+    };
 
-    //         setVenues(venueData as VenueWithCity[]);
-    //     }
-        
-    //     // TODO: Add error handling
-    //     getVenueData().catch(err => console.log(err));
-    // }, []);
+    const onKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            onClick();
+        }
+    };
 
     return <div>
         <Header />
-        <article id={styles.about}>
-            <input type="text" />
-            <input type="button" value="Search" />
+        <article id={styles.search}>
+            <input className={styles.searchInput} type="text" autoComplete="on" placeholder="Venue or City" onChange={(e) => onChange(e)} onKeyDown={(e) => onKeyDown(e)} />
+            <input className={styles.btn} type="button" value="Search" onClick={() => onClick()}/>
             <div className={styles.content}>
-                content
+                {searching && <p>Searching...</p>}
+                {!searching && hasSearched && venueData.length === 0 && <><p>No results found.</p><p>Find out how to get a venue added <a href="./involved">here</a></p></>}
+                {venueData.map((venue) => {
+                    return <VenueCard key={venue.id} venue={venue} />
+                    })
+                }
             </div>
         </article>
     </div>

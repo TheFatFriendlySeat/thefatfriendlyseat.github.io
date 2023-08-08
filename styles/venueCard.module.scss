@@ -1,0 +1,28 @@
+.card {
+    width: 100%;
+    border-radius: 7px;
+    margin: 5px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.card:before {
+    content: '+';
+    color: #ffffff;
+    font-weight: bolder;
+    font-size: 20px;
+    float: right;
+    margin: 20px;
+}
+
+.expanded:before {
+    content: '-';
+}
+
+.header {
+    cursor: pointer;
+
+    h2 {
+        text-decoration: underline;
+    }
+}

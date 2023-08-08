@@ -31,6 +31,10 @@ const CityPage: React.FC = () => {
             <div className={styles.content}>
                 <h2>{city.name}</h2>
                 <p>{city.countyName}</p>
+                {city.venues?.map((venue: Venue) => {
+                    return <p>{venue.name}</p>
+                    })
+                }
             </div>
         </article>
     </div>

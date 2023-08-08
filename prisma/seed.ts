@@ -3,90 +3,104 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export enum VenueStatus {
-    REQUESTED = "REQUESTED",
-    AKNOWLEDGED = "AKNOWLEDGED",
-    CAMPAIGN_WIN = "CAMPAIGN_WIN",
-    PROVIDED = "PROVIDED",
-    WONT_PROVIDE = "WONT_PROVIDE",
+type RawVenueData = {
+    Name: string,
+    Website: string,
+    City: string,
+    County: string,
+    ['New Status Field']: string,
+    Notes: string
 }
 
-async function main() {
-    console.log(`Start seeding ...`);
+const getData = async (): Promise<RawVenueData[]> => {
+    const csv = require('csv-parser');
+    const { readdir } = require('fs/promises');
+    const { createReadStream } = require('fs');
+    const path = require('path');
 
-    const venuesData = [
-        {
-            name: "Leeds Grand Theatre",
-            website: "https://leedsheritagetheatres.com/",
-            status: VenueStatus.PROVIDED,
-            notes: `What are your seat measurements?
-            Leeds Grand Theatre
-            
-            Stalls: Seat pad width: 48cm / Leg room: 80cm. All seats have arm-rests these can't be removed
-            
-            Dress Circle: Seat pad width: 44cm / Leg room: 63cm. All seats have arm-rests these can't be removed
-            
-            Upper Circle: Seat pad width: 42cm / Leg room: 68cm. All seats have arm-rests these can't be removed
-            
-            Balcony: Seat pad width: 43cm / Leg room: 71cm. All seats have arm-rests these can't be removed
-            
-            Upper Balcony: Seat pad width: 42cm / Leg room: 65cm. No arm rests
-            
-            Boxes have free-standing chairs so may be more spacious`,
-            city: "Leeds",
-            county: "West Yorkshire",
-        },
-        {
-            name: "Alhambra Theatre",
-            website: "https://www.bradford-theatres.co.uk/",
-            status: VenueStatus.AKNOWLEDGED,
-            notes: `Requested - Chased 24/04.
-            Contact us form only, so sent IG message to see if I can make contact.
-            05/06 - found an email address (Theatres.Administration@bradford.gov.uk) so emailed again.
-            12/06 - email received confirming receipt, have offered measuring service.`,
-            city: "Bradford",
-            county: "West Yorkshire",
-        },
-        {
-            name: "Stephen Joseph Theatre",
-            website: "https://sjt.uk.com/",
-            status: VenueStatus.CAMPAIGN_WIN,
-            notes: `Seat dimensions
+    const dataDirecrory: string = path.join(__dirname, '../data');
 
-            The Round: Seat widths range from 42-44cm. All seats except the back row have armrests which cannot be moved. The backrow doesn't have any armrests - the seats are raised with a cushioned barrier you can lean forwards onto. The Round is auditorium with blue seats in the pictures.
-            
-            The McCarthy: Seat widths are 45cm and all seats have armrests which cannot be moved. The McCarthy is the auditorium with red seats in the pictures.
-            
-            Aisles and staircases are marked on our seating plans. If you have any questions please email our Box Office team who can advise on specific seats.`,
-            city: "Scarborough",
-            county: "North Yorkshire",
+    const getLatestFile = async () => {
+        try {
+            const files = await readdir(dataDirecrory);
+            files.sort((a: string, b: string) => {
+                const [yearA, monthA, dayA] = a.split('.')[0].split('-');
+                const [yearB, monthB, dayB] = b.split('.')[0].split('-');
+    
+                return (new Date(parseInt(yearA), parseInt(monthA), parseInt(dayA)) as any) - (new Date(parseInt(yearB), parseInt(monthB), parseInt(dayB)) as any);
+            });
+
+            return files[files.length - 1];
         }
-    ];
+        catch (err) {
+            console.log("Error reading directory");
+            console.log(err);
+        }
+    }
+
+    const getFileData = (dataDir: string, fileName: string): Promise<RawVenueData[]> => {
+        const results: any[] = [];
+        
+        return new Promise((resolve, reject) => {
+            createReadStream(`${dataDir}/${fileName}`)
+                .pipe(csv())
+                .on('data', (data: any) => results.push(data))
+                .on('end', () => {
+                   resolve(results);
+                })
+                .on('error', (err: any) => {
+                    reject(err);
+                })
+            });
+    }
+
+    const fileToRead = await getLatestFile();
+
+    console.log(`Found file: ${fileToRead}`);
+
+    if (!fileToRead) {
+        return Promise.reject("No file to read");
+    }
+
+    return getFileData(dataDirecrory, fileToRead);
+}
+
+const main = async () => {
+    console.log(`Loading data...`);
+    const venuesData = await getData();
+    console.log(`--------`);
+
+    console.log(`Start seeding ...`);
 
     console.log(`- Venues`);
     for (let i = 0; i < venuesData.length; i++) {
         const venueData = venuesData[i];
+
+        if (venueData.Name === '') {
+            continue;
+        }
+
         await prisma.venue.upsert({
             where: { id: i + 1 },
             update: {},
             create: {
-                name: venueData.name,
-                website: venueData.website,
-                status: venueData.status,
-                notes: venueData.notes,
+                name: venueData.Name,
+                website: venueData.Website,
+                status: venueData['New Status Field'],
+                notes: venueData.Notes,
                 cityTown: {
                     connectOrCreate: {
                         where: { cityCounty: {
-                            name: venueData.city,
-                            countyName: venueData.county,
+                            name: venueData.City,
+                            countyName: venueData.County,
                         } },
                         create: {
-                            name: venueData.city,
+                            name: venueData.City,
                             county: {
                                 connectOrCreate: {
-                                    where: { name: venueData.county },
+                                    where: { name: venueData.County },
                                     create: {
-                                        name: venueData.county,
+                                        name: venueData.County,
                                     },
                                 }
                             }
@@ -95,9 +109,9 @@ async function main() {
                 },
                 county: {
                     connectOrCreate: {
-                        where: { name: venueData.county },
+                        where: { name: venueData.County },
                         create: {
-                            name: venueData.county,
+                            name: venueData.County,
                         },
                     }
                 },
@@ -106,11 +120,11 @@ async function main() {
             },
         });
 
-        console.log(`-- Seeded ${venueData.name}`);
+        console.log(`-- Seeded ${venueData.Name}`);
     }
     console.log(`--------`);
 
-    console.log(`Seeding finished.`);
+    console.log(`Seeding finished. Seeded ${venuesData.length} venues.`);
 }
 
 main()
