@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 COPY package.json ./
 COPY ./prisma /usr/src/app/prisma
 
-RUN npm run install
+RUN npm install
 
 # migrate the database
 RUN npm run prisma:migrate:production
