@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../lib/prisma";
-import { Venue } from "@prisma/client";
+import { CityTown, Venue } from ".prisma/client";
+
+export type VenueWithCity = Venue & { cityTown: CityTown };
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const { method } = req;
@@ -51,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
             try {
                 // Search for venues first
-                let venues: Venue[] = [];
+                let venues: VenueWithCity[] = [];
                 venues = await prisma.venue.findMany({
                     include: {
                         cityTown: true,
@@ -60,6 +62,31 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                         // Make sure to search the original search string as well (this might include words in the blacklist)
                         OR: [{name: { contains: searchString}}, ...venueSearchQueries, ...cityTownSearchQueries]
                     }
+                });
+
+                // sort the venues by how many search terms they match, more points for matching terms at the start of the search string and cityTown name
+                venues.sort((a, b) => {
+                    let aMatches = 0;
+                    let bMatches = 0;
+
+                    for (let i = 0; i < filteredSearchStrings.length; i++) {
+                        const term = filteredSearchStrings[i];
+                        if (a.name.toLowerCase().includes(term.toLowerCase())) {
+                            aMatches +=  0.75 + (filteredSearchStrings.length - i);
+                        }
+                        if (a.cityTown.name.toLowerCase().includes(term.toLowerCase())) {
+                            aMatches += 0.5;
+                        }
+
+                        if (b.name.toLowerCase().includes(term.toLowerCase())) {
+                            bMatches +=  0.75 + (filteredSearchStrings.length - i);
+                        }
+                        if (b.cityTown.name.toLowerCase().includes(term.toLowerCase())) {
+                            bMatches += 0.5;
+                        }
+                    }
+
+                    return bMatches - aMatches;
                 });
                 
                 res.status(200).json(venues);
