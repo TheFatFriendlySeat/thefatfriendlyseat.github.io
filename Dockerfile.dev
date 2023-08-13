@@ -5,6 +5,7 @@ FROM --platform=linux/x86_64 node:16-alpine as DEPS
 WORKDIR /usr/src/app
 
 COPY package.json ./
+COPY ./data /usr/src/app/data
 COPY ./prisma /usr/src/app/prisma
 
 RUN npm install

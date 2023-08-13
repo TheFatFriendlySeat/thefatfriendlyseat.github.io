@@ -28,8 +28,8 @@ services:
             - nextjs
         networks:
             - web
-    networks:
-        web:
-            driver: bridge
+networks:
+    web:
+        driver: bridge
         
 
