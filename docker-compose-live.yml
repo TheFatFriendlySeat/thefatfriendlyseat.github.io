@@ -3,7 +3,7 @@ services:
     nextjs:
         container_name: nextjs
         platform: linux/x86_64
-        image: fatfriendlyseat/thefatfriendlyseat:0.9.1
+        image: fatfriendlyseat/thefatfriendlyseat:1.0.0
         command: npm run start
         restart: unless-stopped
         volumes:

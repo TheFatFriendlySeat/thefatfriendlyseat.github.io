@@ -16,7 +16,7 @@
     "prisma:studio": "prisma studio",
     "prisma:format": "prisma format",
     "dcup": "docker-compose -f docker-compose.yml up --build",
-    "dcup:production": "docker-compose -f docker-compose-production.yml up --build"
+    "dcup:production": "docker-compose -f docker-compose-prod-build.yml up --build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "1.0.6",

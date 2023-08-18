@@ -9,6 +9,7 @@ node_modules/
 # database
 
 prisma/dev.db
+data/
 
 # misc files
 
