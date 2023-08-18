@@ -2,34 +2,30 @@ version: "3"
 services:
     nextjs:
         container_name: nextjs
-        build:
-            context: .
-            dockerfile: Dockerfile
+        platform: linux/x86_64
+        image: fatfriendlyseat/thefatfriendlyseat:0.9.1
         command: npm run start
         restart: unless-stopped
         volumes:
-            - ./:/usr/src/app
-            - /usr/src/app/node_modules
-            - /usr/src/app/.next
+            - fatfriendlyseat/prisma:/usr/src/app/prisma
         env_file:
             - .env
-        ports:
-            - "80:3000"
 
     webserver:
         image: nginx:latest
         ports:
-            - 80:80
+            - 80:3000
             - 443:443
-        restart: unless-stopped	
+        restart: unless-stopped
         volumes:
-             - ./nginx/conf/:/etc/nginx/conf.d/:ro
-             - ./certbot/www:/var/www/certbot/:ro
+            - ./nginx/conf/:/etc/nginx/conf.d/:ro
+            - ./certbot/www:/var/www/certbot/:ro
+            - ./certbot/conf/:/etc/nginx/ssl/:ro
 
     certbot:
         image: certbot/certbot:latest
         volumes:
             - ./certbot/www/:/var/www/certbot/:rw
-            - ./certbot/conf/:/etc/lets
+            - ./certbot/conf/:/etc/letsencrypt/:rw
         
 

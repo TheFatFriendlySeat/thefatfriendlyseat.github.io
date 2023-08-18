@@ -1,0 +1,15 @@
+version: "3"
+services:
+    nextjs:
+        container_name: nextjs
+        platform: linux/x86_64
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        command: npm run start
+        volumes:
+            - ./:/usr/src/app
+            - /usr/src/app/node_modules
+            - /usr/src/app/.next
+        env_file:
+            - .env
