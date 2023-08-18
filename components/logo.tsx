@@ -1,4 +1,4 @@
-import styles from "../styles/logo.module.scss"
+import styles from "../styles/components/logo.module.scss"
 
 const Logo = () => {
     return <div id={styles.logo}>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "../styles/venueCard.module.scss";
+import styles from "../styles/components/venueCard.module.scss";
 import { CityTown, Venue } from "@prisma/client";
 
 export type VenueWithCity = Venue & { cityTown: CityTown };

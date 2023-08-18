@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { GoThreeBars, GoX } from "react-icons/go";
 
-import styles from "../styles/menu.module.scss";
+import styles from "../styles/components/menu.module.scss";
 
 const Menu: React.FC = () => {
     const menuRef = useRef<HTMLUListElement>(null);
