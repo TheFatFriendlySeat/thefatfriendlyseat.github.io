@@ -38,19 +38,23 @@ how to run an image on
 `docker push fatfriendlyseat/thefatfriendlyseat:<version>` to push the image with that tag name up to docker hub
 
 
-ssh onto the server ???
+ssh onto the server `ssh root@159.65.61.22`
 
-pull the docker image
+pull the docker image `docker pull fatfriendlyseat/thefatfriendlyseat:<version>`
 
-copy over the prisma folder into the fatfriendlyseat/prisma dir
+if the docker compose has changed copy over docker-compose-live.yml `scp docker-compose-live.yml root@159.65.61.22:/root`
 
-copy over nginx folder
+if database has changed copy over the prisma folder into the fatfriendlyseat/prisma dir `scp -r ~/dev/fatfriendlyseat/prisma root@159.65.61.22:fatfriendlyseat/prisma`
 
-stop the docker container running nextjs
+if any nginx conf as changed copy over nginx folder `scp -r nginx/ root@159.65.61.22:/root`
 
-`docker run -v fatfriendlyseat/prisma:/usr/src/app/prisma --publish 80:3000 fatfriendlyseat/thefatfriendlyseat:<version>`
+restart the docker containers `docker compose -f docker-compose-live.yml restart`
 
 
+
+command to restart nginx
+
+`docker compose -f docker-compose-live.yml exec webserver nginx -s reload` 
 
 # Resources
 

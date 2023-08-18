@@ -40,6 +40,7 @@ const Menu: React.FC = () => {
     return <div>
         <ul className={styles.menu} ref={menuRef}>
             <li className={styles.menuItem}><a href="./">Home</a></li>
+            <li className={styles.menuItem}><a href="./search">Search</a></li>
             <li className={styles.menuItem}><a href="./about">About</a></li>
             <li className={styles.menuItem}><a href="./involved">Get Involved</a></li>
             <li className={styles.menuItem}><a href="./privacy">Privacy Policy</a></li>
